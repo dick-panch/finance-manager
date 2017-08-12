@@ -5,6 +5,7 @@ rescue LoadError
 end
 
 require 'rdoc/task'
+require 'friendly_id'
 
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
@@ -21,13 +22,11 @@ RDoc::Task.new(:rdoc) do |rdoc|
 end
 
 require 'bundler/gem_tasks'
-
 require 'rake/testtask'
 
 APP_RAKEFILE = File.expand_path("../test/dummy/Rakefile", __FILE__)
 
 load 'rails/tasks/engine.rake'
-
 load 'rails/tasks/statistics.rake'
 
 Bundler::GemHelper.install_tasks
