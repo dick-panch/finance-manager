@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
   ## Relationship
   has_many :categories
+  has_many :transactions, dependent: :destroy
 
   def is_admin?
   	self.role_id == 2
