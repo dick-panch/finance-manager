@@ -12,6 +12,7 @@ class Transaction < ApplicationRecord
 
 	## Callbacks
 	before_save :set_transaction_type
+	before_save :set_month_and_year
 
 	def tran_code
 		"tra#{Time.zone.now.to_i}"
@@ -25,12 +26,29 @@ class Transaction < ApplicationRecord
 		Rails.application.secrets.transaction_types[transaction_type_id]
 	end
 
+	def self.search(params)
+		q = {}
+		month = params[:month].present? ? params[:month].to_i : Date.today.month
+		year 	= params[:year].present? ? params[:year].to_i : Date.today.year
+		q.merge!(month: "month = #{month}", year: "year = #{year}")
+		q.merge!(type: "transaction_type_id = #{params[:type_id]}") if params[:type_id].present?
+		q.merge!(category: "category_id = #{params[:category_id]}") if params[:category_id].present?
+		where(q.values.join(' and '))
+	end
+
 	private
 
+	## Callback Methods -----------------------------------------
 	def set_transaction_type
 		self.transaction_type_id = category.category_type_id
 	end
 
+	def set_month_and_year
+		self.month = self.transaction_date.month
+		self.year = self.transaction_date.year
+	end
+
+	## Friendly ID Method ---------------------------------------
 	def should_generate_new_friendly_id?
   	description_changed?
 	end	

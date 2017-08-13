@@ -12,6 +12,8 @@ class CreateTransactions < ActiveRecord::Migration[5.1]
       t.integer :is_repeat, default: false
       t.integer :transaction_type_id
       t.integer :user_id
+      t.integer :month, default: 0
+      t.integer :year, default: 0
       t.string :slug
       t.timestamps
     end
