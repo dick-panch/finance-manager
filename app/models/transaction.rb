@@ -14,6 +14,11 @@ class Transaction < ApplicationRecord
 	before_save :set_transaction_type
 	before_save :set_month_and_year
 
+	## Scopes
+	scope :expenses, -> {where('transactions.transaction_type_id = ?', 1)}
+	scope :incomes, -> {where('transactions.transaction_type_id = ?', 2)}
+
+
 	def tran_code
 		"tra#{Time.zone.now.to_i}"
 	end
