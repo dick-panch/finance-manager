@@ -32,6 +32,11 @@ class DashboardReport
 		hash[:previous_year_total_income] 	= @previous_year_total_income
 		hash[:current_year_total_expense] 	= @current_year_total_expense
 		hash[:previous_year_total_expense] 	= @previous_year_total_expense
+		hash[:current_year_income_month_wise] 	= current_year_income_month_wise
+		hash[:current_year_expense_month_wise] 	= current_year_expense_month_wise
+		hash[:top_6_expenses]										= top_6_expenses
+		hash[:total_no_of_income_record] 				= total_no_of_income_record
+		hash[:total_no_of_expense_record] 			= total_no_of_expense_record
 		return hash
 	end
 
@@ -75,5 +80,40 @@ class DashboardReport
 	def get_total_expense_for_previous_year
 		transactions = @user.transactions.where("year = ? AND transaction_type_id = ?", @previous_year, 1)
 		@previous_year_total_expense = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
+	end
+
+	def current_year_income_month_wise
+		transactions = @user.transactions.where("year = ? AND transaction_type_id = ?", @year, 2)
+		return group_by_month_and_sum_of_amount(transactions)		
+	end
+
+	def current_year_expense_month_wise
+		transactions = @user.transactions.where("year = ? AND transaction_type_id = ?", @year, 1)
+		return group_by_month_and_sum_of_amount(transactions)		
+	end
+
+	def group_by_month_and_sum_of_amount(transactions)
+		data = {} 
+		transactions.group_by{|t| t.month}.each do |month, values|
+			data.merge!(month => values.map{|t| t.amount.to_f}.sum.round(2))
+		end
+		return set_zero_for_empty_month(data)		
+	end
+
+	def set_zero_for_empty_month(data)
+		(1..12).to_a.map{|t| data.merge!(t => 0) unless data[t].present? }
+		return Hash[data.sort]
+	end
+
+	def top_6_expenses
+		transactions = @user.transactions.where("year = ? AND month = ? AND transaction_type_id = ?", @year, @month, 1).order('amount DESC').limit(6)
+	end
+
+	def total_no_of_income_record
+		@user.transactions.where("year = ? AND month = ? AND transaction_type_id = ?", @year, @month, 2).count
+	end
+
+	def total_no_of_expense_record
+		@user.transactions.where("year = ? AND month = ? AND transaction_type_id = ?", @year, @month, 1).count
 	end
 end
