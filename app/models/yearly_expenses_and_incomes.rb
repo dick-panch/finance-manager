@@ -1,15 +1,18 @@
-class YearlyExpenses
+class YearlyExpensesAndIncomes
 	extend ActiveModel::Naming
 	attr_accessor :user,  :year
 
-	def initialize(user)
+	def initialize(user, transaction_type_id, year=nil)
 		@user = user
-		@year = Date.today.year
+		@year = year.present? ? year : Date.today.year
+		@transaction_type_id = transaction_type_id
+
 	end
 
 	def exec
 		@results = {}
-		@transactions = @user.transactions.where("year = ? and transaction_type_id = ?", @year, 1)
+		@transactions = @user.transactions.where("year = ? and transaction_type_id = ?", @year, @transaction_type_id)
+		@years 				= @user.transactions.group_by{|t| t.year}.keys
 		matrix_transaction(@results)
 		return @results
 	end
@@ -18,6 +21,7 @@ class YearlyExpenses
 		hash = {}
 		hash[:results] 	= @results
 		hash[:totals] 	= sum_of_months
+		hash[:years] 		= @years
 		return hash
 	end
 
