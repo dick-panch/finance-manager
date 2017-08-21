@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "5.1.2"
   s.add_development_dependency "pg", '~> 0.18'
   s.add_dependency 'devise', '4.3.0'
+  s.add_dependency 'paperclip', '~> 5.0.0'  
 end

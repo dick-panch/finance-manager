@@ -6,7 +6,6 @@ class YearlyExpensesAndIncomes
 		@user = user
 		@year = year.present? ? year : Date.today.year
 		@transaction_type_id = transaction_type_id
-
 	end
 
 	def exec

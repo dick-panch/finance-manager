@@ -3,10 +3,14 @@ class Transaction < ApplicationRecord
 	belongs_to :user
 	belongs_to :category
 
+	extend ImportTransaction
+
 	## Friendly ID
  	extend FriendlyId 	
   friendly_id :tran_code, use: :slugged
 
+  ## Temp. Fields
+  attr_accessor :file
 	## Validations
 	validates :description, :category_id, :transaction_date, :amount, :user_id, presence: true
 
@@ -39,6 +43,10 @@ class Transaction < ApplicationRecord
 		q.merge!(type: "transaction_type_id = #{params[:type_id]}") if params[:type_id].present?
 		q.merge!(category: "category_id = #{params[:category_id]}") if params[:category_id].present?
 		where(q.values.join(' and '))
+	end
+
+	def self.import(file, user)
+		import_general_transactions(file, user)
 	end
 
 	private
