@@ -4,7 +4,7 @@ class BalanceSheet
 
 	def initialize(user, year)
 		@user 	= user
-		@years 				= @user.transactions.group_by{|t| t.year}.keys << Date.today.year + 1
+		@years 				= @user.transactions.group_by{|t| t.year}.keys << (Date.today.year + 1)
 		@start_date 	= "1/4/#{year.to_i-1}".to_date
 		@end_date 		= "31/3/#{year}".to_date
 	end
@@ -19,7 +19,7 @@ class BalanceSheet
 		hash = {}
 		hash[:incomes] 	= @income_transactions
 		hash[:expenses]	= @expenses_transactions		
-		hash[:years]		= @years
+		hash[:years]		= @years.sort
 		return hash		
 	end
 end
