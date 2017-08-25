@@ -5,7 +5,7 @@ class DashboardReport
 	def initialize(user)
 		@user 	= user
 		@month  = Date.today.month
-		@year 	= Date.today.year		
+		@year 	= Date.today.year
 		@previous_month = (Date.today - 1.month).to_date.month
 		@previous_year = (Date.today - 1.month).to_date.year
 	end
