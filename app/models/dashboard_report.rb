@@ -37,6 +37,10 @@ class DashboardReport
 		hash[:top_6_expenses]										= top_6_expenses
 		hash[:total_no_of_income_record] 				= total_no_of_income_record
 		hash[:total_no_of_expense_record] 			= total_no_of_expense_record
+
+		## Category Expenses
+		hash[:category_expenses_for_current_month] = get_category_expenses_for_current_month
+		hash[:category_incomes_for_current_month] = get_category_incomes_for_current_month
 		return hash
 	end
 
@@ -115,5 +119,32 @@ class DashboardReport
 
 	def total_no_of_expense_record
 		@user.transactions.where("year = ? AND month = ? AND transaction_type_id = ?", @year, @month, 1).count
+	end
+
+	## Categories Expenses for current month
+	def get_category_expenses_for_current_month
+		transactions = @user.transactions.where("year = ? and month = ?", @year, @month)
+		total_expense_current_month = transactions.expenses.map{|t| t.amount}.sum.to_f.round(2)
+		category_expenses = []
+		transactions.expenses.group_by{|t| t.category.name}.each do |category, expenses|
+			category_expenses << {	'category' => category,
+				'percent' => (expenses.flatten.map{|t| t.amount}.sum * 100 / total_expense_current_month).to_f.round(2),
+				'amount' => expenses.flatten.map{|t| t.amount}.sum
+			}
+		end
+		return category_expenses
+	end
+
+	def get_category_incomes_for_current_month
+		transactions = @user.transactions.where("year = ? and month = ?", @year, @month)
+		total_income_current_month = transactions.incomes.map{|t| t.amount}.sum.to_f.round(2)
+		category_expenses = []
+		transactions.incomes.group_by{|t| t.category.name}.each do |category, incomes|
+			category_expenses << {	'category' => category,
+				'percent' => (incomes.flatten.map{|t| t.amount}.sum * 100 / total_income_current_month).to_f.round(2),
+				'amount' => incomes.flatten.map{|t| t.amount}.sum
+			}
+		end
+		return category_expenses		
 	end
 end
