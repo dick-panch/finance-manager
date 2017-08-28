@@ -14,8 +14,8 @@ class ReportService
 
 	def get_instance_variable
 		hash = {}
-		hash[:incomes] 	= @incomes
-		hash[:expenses]	= @expenses
+		hash[:incomes] 	= Hash[@incomes.sort]
+		hash[:expenses]	= Hash[@expenses.sort]
 		return hash
 	end
 
@@ -25,8 +25,7 @@ class ReportService
 		@incomes = @user.transactions.where("year = ? AND transaction_type_id = ?", @year, 2).group_by{|t| t.month}
 		(1..12).each do |month|
 			@incomes.merge!(month => @incomes[month].present? ? @incomes[month].map{|t| t.amount.to_f}.sum : 0.0)
-		end
-		return Hash[@incomes.sort]
+		end		
 	end
 
 	def get_total_expense_for_current_year_month_wise
@@ -34,7 +33,6 @@ class ReportService
 		(1..12).each do |month|
 			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0) 
 		end
-		return Hash[@expenses.sort]
 	end
 
 end
