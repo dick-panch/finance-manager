@@ -4,6 +4,7 @@ class Transaction < ApplicationRecord
 	belongs_to :category
 
 	extend ImportTransaction
+	include MyBalance
 
 	## Friendly ID
  	extend FriendlyId 	
@@ -15,8 +16,7 @@ class Transaction < ApplicationRecord
 	validates :description, :category_id, :transaction_date, :amount, :user_id, presence: true
 
 	## Callbacks
-	before_save :set_transaction_type
-	before_save :set_month_and_year
+	before_save :set_transaction_type, :set_month_and_year, :update_my_balance
 
 	## Scopes
 	scope :expenses, -> {where('transactions.transaction_type_id = ?', 1)}
@@ -49,6 +49,22 @@ class Transaction < ApplicationRecord
 		import_general_transactions(file, user)
 	end
 
+	protected
+
+	## Boolean Methods
+	def is_debited?
+		self.transaction_type_id == 2
+	end
+
+	def is_credited?
+		self.transaction_type_id == 1
+	end
+
+	## Friendly ID Method ---------------------------------------
+	def should_generate_new_friendly_id?
+  	description_changed?
+	end	
+
 	private
 
 	## Callback Methods -----------------------------------------
@@ -61,9 +77,7 @@ class Transaction < ApplicationRecord
 		self.year = self.transaction_date.year
 	end
 
-	## Friendly ID Method ---------------------------------------
-	def should_generate_new_friendly_id?
-  	description_changed?
-	end	
-
+	def update_my_balance
+		balance_update(self) if self.amount_changed?
+	end
 end
