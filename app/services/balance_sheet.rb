@@ -10,16 +10,18 @@ class BalanceSheet
 	end
 
 	def exec	
-		transactions = @user.transactions.where("transaction_date >= ? and transaction_date <= ?", @start_date, @end_date)
-		@income_transactions = transactions.incomes.group_by{|t| t.category.name }
-		@expenses_transactions = transactions.expenses.group_by{|t| t.category.name }
+		transactions 							= @user.transactions.where("transaction_date >= ? and transaction_date <= ?", @start_date, @end_date)
+		@income_transactions 			= transactions.incomes.group_by{|t| t.category.name }
+		@expenses_transactions 		= transactions.expenses.group_by{|t| t.category.name }
+		@investments_transactions = transactions.investments.group_by{|t| t.category.name }
 	end
 
 	def get_instance_variable
 		hash = {}
-		hash[:incomes] 	= @income_transactions
-		hash[:expenses]	= @expenses_transactions		
-		hash[:years]		= @years.sort
+		hash[:incomes] 			= @income_transactions
+		hash[:expenses]			= @expenses_transactions		
+		hash[:investments]	= @investments_transactions		
+		hash[:years]				= @years.sort
 		return hash		
 	end
 end

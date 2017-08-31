@@ -28,6 +28,7 @@ class ProfitAndLossAccount
 		hash = {}
 		hash[:incomes] 	= @income_transactions
 		hash[:expenses]	= @expenses_transactions
+		hash[:investments] = @investments_transactions
 		hash[:month] 		= Date::MONTHNAMES[@month] if @month.present?
 		hash[:year] 		= @year
 		hash[:years]		= @years
@@ -37,29 +38,33 @@ class ProfitAndLossAccount
 	private
 
 	def execute_monthly_profit_n_loss_report
-		transactions = @user.transactions.where('month = ? and year = ?', @month, @year)
-		@income_transactions = transactions.incomes.group_by{|t| t.category.name }
-		@expenses_transactions = transactions.expenses.group_by{|t| t.category.name }
+		transactions 							= @user.transactions.where('month = ? and year = ?', @month, @year)
+		@income_transactions 			= transactions.incomes.group_by{|t| t.category.name }
+		@expenses_transactions 		= transactions.expenses.group_by{|t| t.category.name }
+		@investments_transactions = transactions.investments.group_by{|t| t.category.name }
 	end
 
 	def execute_quarterly_profit_n_loss_report
-		transactions = get_quarterly_transactions
-		@income_transactions = transactions.incomes.group_by{|t| t.category.name }
-		@expenses_transactions = transactions.expenses.group_by{|t| t.category.name }		
+		transactions 							= get_quarterly_transactions
+		@income_transactions 			= transactions.incomes.group_by{|t| t.category.name }
+		@expenses_transactions 		= transactions.expenses.group_by{|t| t.category.name }		
+		@investments_transactions = transactions.investments.group_by{|t| t.category.name }
 	end
 
 	def execute_yearly_profit_n_loss_report
-		transactions = @user.transactions.where('year = ?', @year)
-		@income_transactions = transactions.incomes.group_by{|t| t.category.name }
-		@expenses_transactions = transactions.expenses.group_by{|t| t.category.name }
+		transactions 							= @user.transactions.where('year = ?', @year)
+		@income_transactions 			= transactions.incomes.group_by{|t| t.category.name }
+		@expenses_transactions 		= transactions.expenses.group_by{|t| t.category.name }
+		@investments_transactions = transactions.investments.group_by{|t| t.category.name }
 	end
 
 	def execute_custom_profit_n_loss_report
-		start_date = @params[:daterange].split('-')[0].strip.to_date
-		end_date = @params[:daterange].split('-')[1].strip.to_date
-		transactions = @user.transactions.where('transaction_date >= ? and transaction_date <= ?', start_date, end_date)
-		@income_transactions = transactions.incomes.group_by{|t| t.category.name }
-		@expenses_transactions = transactions.expenses.group_by{|t| t.category.name }		
+		start_date 		= @params[:daterange].split('-')[0].strip.to_date
+		end_date 			= @params[:daterange].split('-')[1].strip.to_date
+		transactions 	= @user.transactions.where('transaction_date >= ? and transaction_date <= ?', start_date, end_date)
+		@income_transactions 			= transactions.incomes.group_by{|t| t.category.name }
+		@expenses_transactions 		= transactions.expenses.group_by{|t| t.category.name }		
+		@investments_transactions = transactions.investments.group_by{|t| t.category.name }
 	end
 
 	def get_quarterly_transactions
