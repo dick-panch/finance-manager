@@ -21,6 +21,7 @@ class Transaction < ApplicationRecord
 	## Scopes
 	scope :expenses, -> {where('transactions.transaction_type_id = ?', 1)}
 	scope :incomes, -> {where('transactions.transaction_type_id = ?', 2)}
+	scope :investments, -> {where('transactions.transaction_type_id = ?', 3)}
 
 
 	def tran_code
