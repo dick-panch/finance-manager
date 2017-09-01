@@ -10,6 +10,7 @@ class ReportService
 	def exec
 		get_total_income_for_current_year_month_wise
 		get_total_expense_for_current_year_month_wise
+		get_total_investment_for_current_year_month_wise
 		monthly_balance_for_current_year
 	end
 
@@ -17,6 +18,7 @@ class ReportService
 		hash = {}
 		hash[:incomes] 	= Hash[@incomes.sort]
 		hash[:expenses]	= Hash[@expenses.sort]
+		hash[:investments] = Hash[@investments.sort]
 		hash[:my_balances] = @my_balances
 		return hash
 	end
@@ -35,6 +37,13 @@ class ReportService
 		(1..12).each do |month|
 			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0) 
 		end
+	end
+
+	def get_total_investment_for_current_year_month_wise
+		@investments = @user.transactions.where("year = ? AND type_id = ?", @year, 3).group_by{|t| t.month}
+		(1..12).each do |month|
+			@investments.merge!(month => @investments[month].present? ? @investments[month].map{|t| t.amount.to_f}.sum : 0.0) 
+		end		
 	end
 
 	def monthly_balance_for_current_year
