@@ -30,8 +30,7 @@ class BalanceReport
 				month: month, 
 				income: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 2 ? t.amount : 0.0 }.sum : 0.0,
 				expense: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 1 ? t.amount : 0.0 }.sum : 0.0,
-				investment: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 3 ? t.amount : 0.0}.sum : 0.0,
-				total: transactions[month].present? ? transactions[month].flatten.collect{|t| t.amount}.sum : 0.0
+				investment: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 3 ? t.amount : 0.0}.sum : 0.0				
 			}
 		end		
 	end
