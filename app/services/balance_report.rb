@@ -10,6 +10,8 @@ class BalanceReport
 
 	def exec
 		balance_report
+		yearly_total
+		my_current_balance
 	end
 
 	def get_instance_variable
@@ -17,6 +19,8 @@ class BalanceReport
 		hash[:year] 		= @year
 		hash[:years]		= @years
 		hash[:results]  = @results
+		hash[:total] 		= @total
+		hash[:yearly_total] = @yearly_total
 		return hash
 	end
 
@@ -33,5 +37,19 @@ class BalanceReport
 				investment: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 3 ? t.amount : 0.0}.sum : 0.0				
 			}
 		end		
+	end
+
+	def yearly_total
+		income 			= @results.map{|t| t[:income]}.sum
+		expense 		= @results.map{|t| t[:expense]}.sum
+		investment 	= @results.map{|t| t[:investment]}.sum
+		@yearly_total = income - (expense + investment)
+	end
+
+	def my_current_balance
+		income 			= @user.transactions.incomes.map{|t| t.amount}.sum
+		expense 		= @user.transactions.expenses.map{|t| t.amount}.sum
+		investment 	= @user.transactions.investments.map{|t| t.amount}.sum
+		@total = income - (expense + investment)		
 	end
 end
