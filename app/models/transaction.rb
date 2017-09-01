@@ -16,12 +16,12 @@ class Transaction < ApplicationRecord
 	validates :description, :category_id, :transaction_date, :amount, :user_id, presence: true
 
 	## Callbacks
-	before_save :set_transaction_type, :set_month_and_year, :update_my_balance
+	before_save :set_transaction_type, :set_month_and_year, :update_my_balance, :set_type_id
 
 	## Scopes
-	scope :expenses, -> {where('transactions.transaction_type_id = ?', 1)}
-	scope :incomes, -> {where('transactions.transaction_type_id = ?', 2)}
-	scope :investments, -> {where('transactions.transaction_type_id = ?', 3)}
+	scope :expenses, -> {where('transactions.type_id = ?', 1)}
+	scope :incomes, -> {where('transactions.type_id = ?', 2)}
+	scope :investments, -> {where('transactions.type_id = ?', 3)}
 
 
 	def tran_code
@@ -34,6 +34,10 @@ class Transaction < ApplicationRecord
 
 	def transaction_type
 		Rails.application.secrets.transaction_types[transaction_type_id]
+	end
+
+	def type
+		Rails.application.secrets.transaction_types[category_type_id]
 	end
 
 	def self.search(params)
@@ -82,5 +86,9 @@ class Transaction < ApplicationRecord
 
 	def update_my_balance
 		balance_update(self) if self.amount_changed?
+	end
+
+	def set_type_id
+		self.type_id = self.category.category_type_id
 	end
 end

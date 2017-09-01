@@ -24,14 +24,14 @@ class ReportService
 	private
 
 	def get_total_income_for_current_year_month_wise
-		@incomes = @user.transactions.where("year = ? AND transaction_type_id = ?", @year, 2).group_by{|t| t.month}
+		@incomes = @user.transactions.where("year = ? AND type_id = ?", @year, 2).group_by{|t| t.month}
 		(1..12).each do |month|
 			@incomes.merge!(month => @incomes[month].present? ? @incomes[month].map{|t| t.amount.to_f}.sum : 0.0)
 		end		
 	end
 
 	def get_total_expense_for_current_year_month_wise
-		@expenses = @user.transactions.where("year = ? AND transaction_type_id = ?", @year, 1).group_by{|t| t.month}
+		@expenses = @user.transactions.where("year = ? AND type_id = ?", @year, 1).group_by{|t| t.month}
 		(1..12).each do |month|
 			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0) 
 		end
