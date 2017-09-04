@@ -52,6 +52,7 @@ class DashboardReport
 
 		hash[:current_year_income_month_wise] 	= current_year_income_month_wise
 		hash[:current_year_expense_month_wise] 	= current_year_expense_month_wise
+		hash[:current_year_investment_month_wise] = current_year_investment_month_wise
 
 		hash[:top_6_expenses]										= top_6_expenses
 
@@ -141,6 +142,11 @@ class DashboardReport
 
 	def current_year_expense_month_wise
 		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 1)
+		return group_by_month_and_sum_of_amount(transactions)		
+	end
+
+	def current_year_investment_month_wise
+		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 3)
 		return group_by_month_and_sum_of_amount(transactions)		
 	end
 
