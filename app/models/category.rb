@@ -5,7 +5,8 @@ class Category < ApplicationRecord
 
 	## Relationships
 	belongs_to :user, optional: true
-
+	has_many :budgets, dependent: :destroy
+	has_many :transactions
 	## Scopes
 	scope :main, -> {where('categories.user_id IS NULL')}
 

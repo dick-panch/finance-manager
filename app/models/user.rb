@@ -15,7 +15,8 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :setting
 
   has_many :balances, dependent: :destroy
-  
+  has_many :budgets, dependent: :destroy 
+   
   ## Callback
   after_create :create_default_setting
 
