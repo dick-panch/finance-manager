@@ -10,7 +10,7 @@ class BudgetService
   end
 
   def exec
-    my_budgets   
+    my_budgets
   end
 
   def get_instance_variable
@@ -19,7 +19,7 @@ class BudgetService
     hash[:month] = @month
     hash[:year]  = @year
     hash[:budgets] = @budgets
-    return hash   
+    return hash
   end
 
   private

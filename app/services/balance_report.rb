@@ -31,12 +31,12 @@ class BalanceReport
 		transactions = @user.transactions.where("year = ?", @year).group_by{|t| t.month}
 		(1..12).each do |month|
 			@results << {
-				month: month, 
+				month: month,
 				income: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 2 ? t.amount : 0.0 }.sum : 0.0,
 				expense: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 1 ? t.amount : 0.0 }.sum : 0.0,
-				investment: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 3 ? t.amount : 0.0}.sum : 0.0				
+				investment: transactions[month].present? ? transactions[month].flatten.collect{|t| t.type_id == 3 ? t.amount : 0.0}.sum : 0.0
 			}
-		end		
+		end
 	end
 
 	def yearly_total
@@ -50,6 +50,6 @@ class BalanceReport
 		income 			= @user.transactions.incomes.map{|t| t.amount}.sum
 		expense 		= @user.transactions.expenses.map{|t| t.amount}.sum
 		investment 	= @user.transactions.investments.map{|t| t.amount}.sum
-		@total = income - (expense + investment)		
+		@total = income - (expense + investment)
 	end
 end

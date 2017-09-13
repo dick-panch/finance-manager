@@ -4,7 +4,7 @@ class ReportService
 
 	def initialize(user)
 		@user 			= user
-		@year 			= Date.today.year		
+		@year 			= Date.today.year
 	end
 
 	def exec
@@ -35,14 +35,14 @@ class ReportService
 	def get_total_expense_for_current_year_month_wise
 		@expenses = @user.transactions.where("year = ? AND type_id = ?", @year, 1).group_by{|t| t.month}
 		(1..12).each do |month|
-			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0) 
+			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0)
 		end
 	end
 
 	def get_total_investment_for_current_year_month_wise
 		@investments = @user.transactions.where("year = ? AND type_id = ?", @year, 3).group_by{|t| t.month}
 		(1..12).each do |month|
-			@investments.merge!(month => @investments[month].present? ? @investments[month].map{|t| t.amount.to_f}.sum : 0.0) 
+			@investments.merge!(month => @investments[month].present? ? @investments[month].map{|t| t.amount.to_f}.sum : 0.0)
 		end		
 	end
 

@@ -21,7 +21,7 @@ class DashboardReport
 		get_total_investment_for_previous_month
 
 		get_total_expense_for_current_year
-		get_total_expense_for_previous_year						
+		get_total_expense_for_previous_year
 
 		get_total_income_for_current_year
 		get_total_income_for_previous_year
@@ -113,7 +113,7 @@ class DashboardReport
 		@previous_year_total_income = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
-	## Total Expense for current and previous year 
+	## Total Expense for current and previous year
 	def get_total_expense_for_current_year
 		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 1)
 		@current_year_total_expense = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
@@ -151,11 +151,11 @@ class DashboardReport
 	end
 
 	def group_by_month_and_sum_of_amount(transactions)
-		data = {} 
+		data = {}
 		transactions.group_by{|t| t.month}.each do |month, values|
 			data.merge!(month => values.map{|t| t.amount.to_f}.sum.round(2))
 		end
-		return set_zero_for_empty_month(data)		
+		return set_zero_for_empty_month(data)
 	end
 
 	def set_zero_for_empty_month(data)
@@ -212,6 +212,6 @@ class DashboardReport
 				'amount' => investments.flatten.map{|t| t.amount}.sum
 			}
 		end
-		return category_investment		
+		return category_investment
 	end
 end
