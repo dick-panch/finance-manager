@@ -1,33 +1,33 @@
 class DashboardReport
-	extend ActiveModel::Naming
-	attr_accessor :user, :month, :year, :previous_month, :previous_year
+	extend ActiveModel::Naming	
 
 	def initialize(user)
-		@user 	= user
-		@month  = Date.today.month
-		@year 	= Date.today.year
-		@previous_month = (Date.today - 1.month).to_date.month
-		@previous_year = (Date.today - 1.month).to_date.year
+		@user 			= user
+		today 			= Date.today
+		prev_month 	= (today - 1.month).to_date
+		@month  		= today.month
+		@year 			= today.year
+		@previous_month = prev_month.month
+		@previous_year 	= prev_month.year
 	end
 
 	def exec
-		get_total_expense_for_current_month
-		get_total_expense_for_previous_month
-
-		get_total_income_for_current_month
-		get_total_income_for_previous_month
-
-		get_total_investment_for_current_month
-		get_total_investment_for_previous_month
-
-		get_total_expense_for_current_year
-		get_total_expense_for_previous_year
-
-		get_total_income_for_current_year
-		get_total_income_for_previous_year
-
-		get_total_investment_for_current_year
-		get_total_investment_for_previous_year
+		%w[ 
+			ExpenseForCurrentMonth
+			ExpenseForPreviousMonth
+			IncomeForCurrentMonth
+			IncomeForPreviousMonth
+			InvestmentForCurrentMonth
+			InvestmentForPreviousMonth
+			ExpenseForCurrentYear
+			ExpenseForPreviousYear
+			IncomeForCurrentYear
+			IncomeForPreviousYear
+			InvestmentForCurrentYear
+			InvestmentForPreviousYear
+		].each do |_x|  
+	    send("get_total_#{_x.underscore}")      
+	  end
 	end
 
 	def get_instance_variable
