@@ -23,6 +23,9 @@ class Transaction < ApplicationRecord
 	scope :incomes, -> {where('transactions.type_id = ?', 2)}
 	scope :investments, -> {where('transactions.type_id = ?', 3)}
 
+	scope :with_month_year, -> (month, year) { where('transactions.month = ? and transactions.year = ?', month, year) }
+	scope :with_year, -> (year) { where('transactions.year = ?', year) }
+	scope :with_type, -> (type_id) {where('transactions.type_id = ?', type_id)}
 
 	def tran_code
 		"tra#{Time.zone.now.to_i}"

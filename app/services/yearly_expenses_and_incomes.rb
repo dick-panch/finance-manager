@@ -10,7 +10,7 @@ class YearlyExpensesAndIncomes
 
 	def exec
 		@results = {}
-		@transactions = @user.transactions.where("year = ? and type_id = ?", @year, @transaction_type_id)
+		@transactions = @user.transactions.with_year(@year).with_type(@transaction_type_id)		
 		@years 				= @user.transactions.group_by{|t| t.year}.keys
 		matrix_transaction(@results)
 		return @results

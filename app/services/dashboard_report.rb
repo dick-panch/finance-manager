@@ -71,82 +71,82 @@ class DashboardReport
 
 	## Total Expense for current month and previous month
 	def get_total_expense_for_current_month
-		transactions = @user.transactions.where("month = ? AND year = ? AND type_id = ?", @month, @year, 1)
+		transactions = @user.transactions.with_month_year(@month, @year).expenses
 		@current_month_total_expense = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	def get_total_expense_for_previous_month
-		transactions = @user.transactions.where("month = ? AND year = ? AND type_id = ?", @previous_month, @previous_year, 1)
+		transactions = @user.transactions.with_month_year(@previous_month, @previous_year).expenses
 		@previous_month_total_expense = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	## Total Income for current and previous month
 	def get_total_income_for_current_month
-		transactions = @user.transactions.where("month = ? AND year = ? AND type_id = ?", @month, @year, 2)
+		transactions = @user.transactions.with_month_year(@month, @year).incomes
 		@current_month_total_income = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0		
 	end
 
 	def get_total_income_for_previous_month
-		transactions = @user.transactions.where("month = ? AND year = ? AND type_id = ?", @previous_month, @previous_year, 2)
+		transactions = @user.transactions.with_month_year(@previous_month, @previous_year).incomes
 		@previous_month_total_income = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	## Total Investment for current and previous month
 	def get_total_investment_for_current_month
-		transactions = @user.transactions.where("month = ? AND year = ? AND type_id = ?", @month, @year, 3)
+		transactions = @user.transactions.with_month_year(@month, @year).investments
 		@current_month_total_investment = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0		
 	end
 
 	def get_total_investment_for_previous_month
-		transactions = @user.transactions.where("month = ? AND year = ? AND type_id = ?", @previous_month, @previous_year, 3)
+		transactions = @user.transactions.with_month_year(@previous_month, @previous_year).investments		
 		@previous_month_total_investment = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end	
 
 	## Total Income for current year and previous year
 	def get_total_income_for_current_year
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 2)		
+		transactions = @user.transactions.with_year(@year).incomes
 		@current_year_total_income = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	def get_total_income_for_previous_year
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @previous_year, 2)
+		transactions = @user.transactions.with_year(@previous_year).incomes
 		@previous_year_total_income = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	## Total Expense for current and previous year
 	def get_total_expense_for_current_year
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 1)
+		transactions = @user.transactions.with_year(@year).expenses
 		@current_year_total_expense = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	def get_total_expense_for_previous_year
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @previous_year, 1)
+		transactions = @user.transactions.with_year(@previous_year).expenses
 		@previous_year_total_expense = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	def get_total_investment_for_current_year
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 3)
+		transactions = @user.transactions.with_year(@year).investments
 		@current_year_total_investment = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 	
 	def get_total_investment_for_previous_year
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @previous_year, 3)
+		transactions = @user.transactions.with_year(@previous_year).investments
 		@previous_year_total_investment = transactions.present? ? transactions.map(&:amount).sum.to_f.round(2) : 0.0
 	end
 
 	## Current Year income/expense month wise
 	def current_year_income_month_wise
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 2)
+		transactions = @user.transactions.with_year(@year).incomes
 		return group_by_month_and_sum_of_amount(transactions)		
 	end
 
 	def current_year_expense_month_wise
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 1)
+		transactions = @user.transactions.with_year(@year).expenses
 		return group_by_month_and_sum_of_amount(transactions)		
 	end
 
 	def current_year_investment_month_wise
-		transactions = @user.transactions.where("year = ? AND type_id = ?", @year, 3)
+		transactions = @user.transactions.with_year(@year).investments		
 		return group_by_month_and_sum_of_amount(transactions)		
 	end
 
@@ -164,20 +164,20 @@ class DashboardReport
 	end
 
 	def top_6_expenses
-		transactions = @user.transactions.where("year = ? AND month = ? AND type_id = ?", @year, @month, 1).order('amount DESC').limit(6)
+		transactions = @user.transactions.with_month_year(@month, @year).expenses.order('amount DESC').limit(6)		
 	end
 
 	def total_no_of_income_record
-		@user.transactions.where("year = ? AND month = ? AND type_id = ?", @year, @month, 2).count
+		@user.transactions.with_month_year(@month, @year).incomes.count		
 	end
 
 	def total_no_of_expense_record
-		@user.transactions.where("year = ? AND month = ? AND type_id = ?", @year, @month, 1).count
+		@user.transactions.with_month_year(@month, @year).expenses.count		
 	end
 
 	## Categories Expenses for current month
 	def get_category_expenses_for_current_month
-		transactions = @user.transactions.where("year = ? and month = ?", @year, @month)
+		transactions = @user.transactions.with_month_year(@month, @year)		
 		total_expense_current_month = transactions.expenses.map{|t| t.amount}.sum.to_f.round(2)
 		category_expenses = []
 		transactions.expenses.group_by{|t| t.category.name}.each do |category, expenses|
@@ -190,7 +190,7 @@ class DashboardReport
 	end
 
 	def get_category_incomes_for_current_month
-		transactions = @user.transactions.where("year = ? and month = ?", @year, @month)
+		transactions = @user.transactions.with_month_year(@month, @year)		
 		total_income_current_month = transactions.incomes.map{|t| t.amount}.sum.to_f.round(2)
 		category_expenses = []
 		transactions.incomes.group_by{|t| t.category.name}.each do |category, incomes|
@@ -203,7 +203,7 @@ class DashboardReport
 	end
 
 	def get_category_investments_for_current_month
-		transactions = @user.transactions.where("year = ? and month = ?", @year, @month)
+		transactions = @user.transactions.with_month_year(@month, @year)
 		total_investment_current_month = transactions.investments.map{|t| t.amount}.sum.to_f.round(2)
 		category_investment = []
 		transactions.investments.group_by{|t| t.category.name}.each do |category, investments|

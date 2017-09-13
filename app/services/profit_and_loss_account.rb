@@ -38,7 +38,7 @@ class ProfitAndLossAccount
 	private
 
 	def execute_monthly_profit_n_loss_report
-		transactions 							= @user.transactions.where('month = ? and year = ?', @month, @year)
+		transactions 							= @user.transactions.with_month_year(@month, @year)
 		@income_transactions 			= transactions.incomes.group_by{|t| t.category.name }
 		@expenses_transactions 		= transactions.expenses.group_by{|t| t.category.name }
 		@investments_transactions = transactions.investments.group_by{|t| t.category.name }

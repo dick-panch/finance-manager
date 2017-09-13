@@ -26,21 +26,21 @@ class ReportService
 	private
 
 	def get_total_income_for_current_year_month_wise
-		@incomes = @user.transactions.where("year = ? AND type_id = ?", @year, 2).group_by{|t| t.month}
+		@incomes = @user.transactions.with_year(@year).incomes.group_by{|t| t.month}
 		(1..12).each do |month|
 			@incomes.merge!(month => @incomes[month].present? ? @incomes[month].map{|t| t.amount.to_f}.sum : 0.0)
-		end		
+		end
 	end
 
 	def get_total_expense_for_current_year_month_wise
-		@expenses = @user.transactions.where("year = ? AND type_id = ?", @year, 1).group_by{|t| t.month}
+		@expenses = @user.transactions.with_year(@year).expenses.group_by{|t| t.month}
 		(1..12).each do |month|
 			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0)
 		end
 	end
 
 	def get_total_investment_for_current_year_month_wise
-		@investments = @user.transactions.where("year = ? AND type_id = ?", @year, 3).group_by{|t| t.month}
+		@investments = @user.transactions.with_year(@year).investments.group_by{|t| t.month}
 		(1..12).each do |month|
 			@investments.merge!(month => @investments[month].present? ? @investments[month].map{|t| t.amount.to_f}.sum : 0.0)
 		end		
@@ -48,7 +48,7 @@ class ReportService
 
 	def monthly_balance_for_current_year
 		@my_balances = {}
-		balances = @user.balances.where("year = ?", @year).group_by{|t| t.month}
+		balances = @user.balances.with_year(@year).group_by{|t| t.month}
 		(1..12).each do |month|
 			@my_balances.merge!(month => balances[month].present? ? balances[month].first.amount.to_f.round(2) : 0.0)
 		end
