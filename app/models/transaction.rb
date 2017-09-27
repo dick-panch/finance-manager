@@ -79,7 +79,7 @@ class Transaction < ApplicationRecord
 	def set_transaction_type
 		# Here set static condition category.category_type_id == 3 because 3 for investment
 		# but investment is one type of expense so that it's debit so for debit it's 2
-		self.transaction_type_id = category.category_type_id == 3 ? 2 : category.category_type_id
+		self.transaction_type_id = category.category_type_id == 3 ? 1 : category.category_type_id
 	end
 
 	def set_month_and_year
