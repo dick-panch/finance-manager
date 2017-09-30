@@ -7,7 +7,7 @@ class Transaction < ApplicationRecord
 	include MyBalance
 
 	## Friendly ID
- 	extend FriendlyId 	
+ 	extend FriendlyId
   friendly_id :tran_code, use: :slugged
 
   ## Temp. Fields
@@ -17,6 +17,15 @@ class Transaction < ApplicationRecord
 
 	## Callbacks
 	before_save :set_transaction_type, :set_month_and_year, :update_my_balance, :set_type_id
+
+	## Paperclips
+	has_attached_file :attachment,
+    path: '/transactions/:id/:filename',
+    url: '/transactions/:id/:filename'
+
+
+  # Validate the attached image is image/jpg, image/png, etc
+  validates_attachment_content_type :attachment, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf']
 
 	## Scopes
 	scope :expenses, -> {where('transactions.type_id = ?', 1)}
