@@ -97,7 +97,7 @@ class Transaction < ApplicationRecord
 	end
 
 	def update_my_balance
-		balance_update(self) if self.amount_changed?
+		balance_update(self)
 	end
 
 	def set_type_id
