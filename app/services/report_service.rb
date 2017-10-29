@@ -28,21 +28,21 @@ class ReportService
 	def get_total_income_for_current_year_month_wise
 		@incomes = @user.transactions.with_year(@year).incomes.group_by{|t| t.month}
 		(1..12).each do |month|
-			@incomes.merge!(month => @incomes[month].present? ? @incomes[month].map{|t| t.amount.to_f}.sum : 0.0)
+			@incomes.merge!(month => @incomes[month].present? ? @incomes[month].map{|t| t.amount.to_f}.sum.round(2) : 0.0)
 		end
 	end
 
 	def get_total_expense_for_current_year_month_wise
 		@expenses = @user.transactions.with_year(@year).expenses.group_by{|t| t.month}
 		(1..12).each do |month|
-			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum : 0.0)
+			@expenses.merge!(month => @expenses[month].present? ? @expenses[month].map{|t| t.amount.to_f}.sum.round(2) : 0.0)
 		end
 	end
 
 	def get_total_investment_for_current_year_month_wise
 		@investments = @user.transactions.with_year(@year).investments.group_by{|t| t.month}
 		(1..12).each do |month|
-			@investments.merge!(month => @investments[month].present? ? @investments[month].map{|t| t.amount.to_f}.sum : 0.0)
+			@investments.merge!(month => @investments[month].present? ? @investments[month].map{|t| t.amount.to_f}.sum.round(2) : 0.0)
 		end		
 	end
 
