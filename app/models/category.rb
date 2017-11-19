@@ -1,6 +1,6 @@
 class Category < ApplicationRecord
 	## Friendly ID
- 	extend FriendlyId 	
+ 	extend FriendlyId
   friendly_id :name, use: :slugged
 
 	## Relationships
