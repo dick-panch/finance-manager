@@ -20,6 +20,8 @@ class User < ApplicationRecord
   ## Callback
   after_create :create_default_setting
 
+  ## Scopes
+  scope :my_users, -> {where('users.role_id = ?', 1)}
   ## Callback Methods
   def create_default_setting
   	self.create_setting
@@ -27,5 +29,9 @@ class User < ApplicationRecord
 
   def is_admin?
   	self.role_id == 2
+  end
+
+  def role
+    Rails.application.secrets.roles[role_id]
   end
 end
