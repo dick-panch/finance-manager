@@ -34,4 +34,18 @@ class User < ApplicationRecord
   def role
     Rails.application.secrets.roles[role_id]
   end
+
+  def my_currency
+    currency = setting.currency_id
+    case currency
+    when 1
+      return '₹' ## Rupee
+    when 2
+      return '$' ## Dollar
+    when 3
+      return '￥' ## Yen
+    else
+      return '₹' ## Rupee
+    end
+  end
 end
